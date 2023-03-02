@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Request, FastAPI
 
 app = FastAPI()
 
-@app.get("/", tags=["Root"])
-async def read_root():
+@app.post("/", tags=["Root"])
+async def read_root(request: Request):
+  print(request)
   return { 
     "message": "Welcome to my notes application, use the /docs route to proceed"
    }
