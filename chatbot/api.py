@@ -4,7 +4,6 @@ from databases import Database
 
 database = Database("sqlite:///test.db")
 from fastapi import Request, FastAPI
-from google.cloud import dialogflow_v2 as dialogflow
 
 app = FastAPI()
 
@@ -21,7 +20,6 @@ async def database_disconnect():
 async def read_root(request: Request):
     data = request.json()
     print(data)
-    session_client = dialogflow.SessionsClient()
 
     session = data['session']
     query_text = data['queryResult']['queryText']
