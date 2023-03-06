@@ -21,8 +21,6 @@ async def read_root(request: Request):
     data = request.json()
     print(data)
     print(request)
-    print(data.__dict__)
-    print(request.__dict__)
 
     session = data['session']
     query_text = data['queryResult']['queryText']
