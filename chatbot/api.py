@@ -17,6 +17,7 @@ async def database_disconnect():
     await database.disconnect()
 
 async def get_or_create_chat(chat_id, location = 'None', type = 'None', last = False):
+    print(chat_id, location, type, last)
     # Define the SQL query to get the session
     query = f"SELECT * FROM sessions WHERE id = :session_id"
 
