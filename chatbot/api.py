@@ -22,9 +22,9 @@ async def read_root(request: Request):
     print(data)
     print(request)
 
-    session = data['session']
+    session = data['session'].split('/')[-1]
     query_text = data['queryResult']['queryText']
-    intent = data['intent']['displayName']
+    intent = data['queryResult']['intent']['displayName']
 
     if intent in ["interval_images_no_interval - custom-2", 
                   "interval_images_no_interval - custom",
@@ -36,11 +36,11 @@ async def read_root(request: Request):
     elif intent in ["interval_images"]:
         location = data['queryResult']['parameters']['city']
         query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type, :last)"
-        values = {"id": session.split('/')[-1], "location": location, "type": 'None', "last": False}
+        values = {"id": session, "location": location, "type": 'None', "last": False}
         await database.execute(query=query, values=values)
     elif intent in ["last_image"]:
         query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type, :last)"
-        values = {"id": session.split('/')[-1], "location": "None", "type": 'None', "last": True}
+        values = {"id": session, "location": "None", "type": 'None', "last": True}
         await database.execute(query=query, values=values)
 
     
