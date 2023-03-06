@@ -24,12 +24,18 @@ async def get_or_create_chat(chat_id, location = 'None', type = 'None', last = F
     values = {"session_id": chat_id}
 
     # Execute the query and get the results
-    results = await database.fetch_all(query=query, values=values)
+    result = await database.fetch_all(query=query, values=values)
 
-    if not results:
+    if not result:
         query = "INSERT INTO sessions (id, location, type, last) VALUES (:id, :location, :type, :last) RETURNING ID"
         values = {"id": chat_id, "location": location, "type": type, "last": last}
-        results = await database.execute(query=query, values=values)
+        result = await database.execute(query=query, values=values)
+    else:
+        result = result[0]
+
+    print("RESULT", result)
+
+    return result
 
 @app.post("/", tags=["Root"])
 async def read_root(request: Request):
