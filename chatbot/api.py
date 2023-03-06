@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from databases import Database
 
-database = Database("sqlite:///test.db")
+database = Database("sqlite:///chatbot.db")
 from fastapi import Request, FastAPI
 
 app = FastAPI()
