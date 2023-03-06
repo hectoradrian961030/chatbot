@@ -35,11 +35,11 @@ async def read_root(request: Request):
         pass
     elif intent in ["interval_images"]:
         location = data['queryResult']['parameters']['location']['city']
-        query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type, :last)"
+        query = "INSERT INTO sessions (id, location, type, last) VALUES (:id, :location, :type, :last)"
         values = {"id": session, "location": location, "type": 'None', "last": False}
         await database.execute(query=query, values=values)
     elif intent in ["last_image"]:
-        query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type, :last)"
+        query = "INSERT INTO sessions (id, location, type, last) VALUES (:id, :location, :type, :last)"
         values = {"id": session, "location": "None", "type": 'None', "last": True}
         await database.execute(query=query, values=values)
 
