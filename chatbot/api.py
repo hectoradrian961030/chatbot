@@ -24,18 +24,23 @@ async def read_root(request: Request):
 
     session = data['session']
     query_text = data['queryResult']['queryText']
-    action = data['queryResult']['action']
+    intent = data['intent']['displayName']
 
-    if action in ["interval_images.interval_images-no.interval_images_no-custom.interval_images_no_interval-custom-2", 
-                  "interval_images.interval_images-no.interval_images_no-custom.interval_images_no_interval-custom",
-                  "interval_images.interval_images-yes.interval_images_yes-custom-2",
-                  "interval_images.interval_images-yes.interval_images_yes-custom",
-                  "last_image.last_image-custom.last_image_location-custom-2",
-                  "last_image.last_image-custom.last_image_location-custom"]:
+    if intent in ["interval_images_no_interval - custom-2", 
+                  "interval_images_no_interval - custom",
+                  "interval_images_yes - custom-2",
+                  "interval_images_yes - custom",
+                  "last_image_location - custom-2",
+                  "last_image_location - custom"]:
         pass
-    else:
-        query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type)"
-        values = {"id": session.split('/')[-1], "location": query_text, "type": 'None'}
+    elif intent in ["interval_images"]:
+        location = data['queryResult']['parameters']['city']
+        query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type, :last)"
+        values = {"id": session.split('/')[-1], "location": location, "type": 'None', "last": False}
+        await database.execute(query=query, values=values)
+    elif intent in ["last_image"]:
+        query = "INSERT INTO sessions (id, location, type) VALUES (:id, :location, :type, :last)"
+        values = {"id": session.split('/')[-1], "location": "None", "type": 'None', "last": True}
         await database.execute(query=query, values=values)
 
     
