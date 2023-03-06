@@ -35,6 +35,16 @@ async def get_or_create_chat(chat_id, location = 'None', type = 'None', last = F
 
     return chat_id
 
+async def generate_response(chat_id):
+    query = f"SELECT * FROM sessions WHERE id = :chat_id"
+
+    values = {"chat_id": chat_id}
+
+    results = await database.fetch_all(query=query, values=values)
+
+    print("FINAL RESULTS ", results)
+    return results
+
 @app.post("/", tags=["Root"])
 async def read_root(request: Request):
     data = await request.json()
@@ -70,7 +80,11 @@ async def read_root(request: Request):
 
         query = f"UPDATE sessions SET type = :new_type_value WHERE id = :row_id"
         values = {"new_type_value": type, "row_id": chat_id}
+
+
         await database.execute(query=query, values=values)
+
+        response = await generate_response(chat_id)
 
     # GET OR CREATE BY SESSION OR CHATID
     elif intent in ["interval_images"]:
