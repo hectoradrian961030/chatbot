@@ -68,7 +68,7 @@ async def read_root(request: Request):
             print("CCCCCCCC")
             type = 'radar'
 
-        query = f"UPDATE sessions SET type = :new_last_value WHERE id = :row_id"
+        query = f"UPDATE sessions SET type = :new_type_value WHERE id = :row_id"
         values = {"new_type_value": type, "row_id": chat_id}
         await database.execute(query=query, values=values)
 
