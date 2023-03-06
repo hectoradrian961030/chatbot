@@ -18,7 +18,7 @@ async def database_disconnect():
 
 @app.post("/", tags=["Root"])
 async def read_root(request: Request):
-    data = request.json()
+    data = await request.json()
     print(data)
     print(request)
 
