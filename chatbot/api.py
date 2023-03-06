@@ -77,10 +77,10 @@ async def read_root(request: Request):
     # GET OR CREATE BY SESSION OR CHATID
     elif intent in ["interval_images"]:
         print("DDDDDDDD")
-        chat_id = get_or_create_chat(chat_id=chat_id, location=location, type='None', last=False)
+        chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=False)
     elif intent in ["last_image"]:
         print("EEEEEEEE")
-        chat_id = get_or_create_chat(chat_id=chat_id, location=location, type='None', last=True)
+        chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=True)
     elif intent in ["interval_images_yes",
                     "interval_images_no"]:
         print("FFFFFFFF")
