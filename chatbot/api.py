@@ -56,7 +56,7 @@ async def read_root(request: Request):
     intent = data['queryResult']['intent']['displayName']
 
     try:
-        location = data['queryResult']['parameters']['location']
+        location = data['queryResult']['parameters']['location']['city']
     except:
         location = 'None'
 
