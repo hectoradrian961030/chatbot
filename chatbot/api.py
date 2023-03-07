@@ -60,6 +60,9 @@ async def read_root(request: Request):
     except:
         location = 'None'
 
+    print("chat_id", "intent", "location")
+    print(chat_id, intent, location)
+
     # OPTICA O RADAR
     if intent in ["interval_images_no_interval - custom-2", 
                   "interval_images_no_interval - custom",
