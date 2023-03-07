@@ -1,9 +1,18 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from databases import Database
+from geopy.geocoders import Nominatim
+from sentinelsat import SentinelAPI
+from shapely.geometry import Polygon
+from datetime import datetime, date, timedelta
+
 
 database = Database("sqlite:///chatbot.db")
 from fastapi import Request, FastAPI
+
+COPERNICUS_HUB_URL = 'https://apihub.copernicus.eu/apihub'
+COPERNICUS_USER = 'hcastellanos'
+COPERNICUS_PASSWORD = 'sentinel1q2w3e4r'
 
 app = FastAPI()
 
@@ -41,10 +50,61 @@ async def generate_response(chat_id):
 
     values = {"chat_id": chat_id}
 
-    results = await database.fetch_all(query=query, values=values)
+    result = await database.fetch_one(query=query, values=values)
+    ('726975471', 'Alicante (Alacant)', 'optica', 1, '2023-02-01T12:00:00+01:00#2023-03-01T12:00:00+01:00')
 
-    print("FINAL RESULTS ", results)
-    return results
+    chat_id, location, img_type, is_interval, str_interval = result
+
+    geolocator = Nominatim(user_agent="sentinel-bot-vpcs")
+    location = geolocator.geocode(location)
+
+    latitude = location.latitude
+    longitude = location.longitude
+
+    api = SentinelAPI(COPERNICUS_USER, COPERNICUS_PASSWORD,
+                      COPERNICUS_HUB_URL)
+
+    bbox = Polygon([(latitude, longitude), (latitude, longitude),
+                    (latitude, longitude)])
+
+    if img_type == 'optica':
+        platformname = 'Sentinel-2'
+        producttype = 'S2MSI2A'
+    else:
+        platformname = 'Sentinel-1'
+        producttype = 'SLC'
+
+    if is_interval:
+        date_format = '%Y-%m-%dT%H:%M:%S%z'
+
+        start_date = datetime.strptime(str_interval.split('#')[0], date_format)
+        end_date = datetime.strptime(str_interval.split('#')[1], date_format)
+
+        start_date = start_date.strftime("%Y%m%d")
+        end_date = end_date.strftime("%Y%m%d")
+    else:
+        end_date = date.today()
+        start_date = end_date - timedelta(days=30)
+
+        start_date = start_date.strftime("%Y%m%d")
+        end_date = end_date.strftime("%Y%m%d")
+
+    products = api.query(bbox.wkt,
+                         date=(start_date, end_date),
+                         platformname=platformname, producttype=producttype)
+
+    products_df = api.to_dataframe(products)
+    products_df_sorted = products_df.sort_values(['beginposition'], ascending=[False])
+
+    print(products_df_sorted)
+
+    if is_interval:
+        pass
+    else:
+        latest_product = products_df_sorted.iloc[0]
+
+    print("FINAL RESULTS ", result)
+    return result
 
 @app.post("/", tags=["Root"])
 async def read_root(request: Request):
