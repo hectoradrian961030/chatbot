@@ -55,6 +55,7 @@ async def generate_response(chat_id):
 
     chat_id, location, img_type, is_interval, str_interval = result
 
+    print(result)
     geolocator = Nominatim(user_agent="sentinel-bot-vpcs")
     location = geolocator.geocode(location)
 
