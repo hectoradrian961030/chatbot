@@ -5,6 +5,7 @@ from geopy.geocoders import Nominatim
 from sentinelsat import SentinelAPI
 from shapely.geometry import Point
 from datetime import datetime, date, timedelta
+import json
 
 
 database = Database("sqlite:///chatbot.db")
@@ -97,9 +98,9 @@ async def generate_response(chat_id):
     products_df_sorted = products_df.sort_values(['beginposition'], ascending=[False])
 
     if is_interval:
-        result = products_df_sorted.to_dict(orient='records')
+        result = json.dumps(products_df_sorted.to_json(orient='records'))
     else:
-        result = products_df_sorted.iloc[[0]].to_dict(orient='records')
+        result = json.dumps(products_df_sorted.iloc[[0]].to_json(orient='records'))
 
     return result
 
