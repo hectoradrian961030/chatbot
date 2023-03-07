@@ -148,7 +148,7 @@ async def read_root(request: Request):
         await database.execute(query=query, values=values)
 
         response = await generate_response(chat_id)
-        
+        print(response)
         return {'fulfillmentText': response}
 
     elif intent in ["interval_images"]:
