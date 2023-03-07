@@ -99,9 +99,9 @@ async def generate_response(chat_id):
     products_df_sorted = products_df.sort_values(['beginposition'], ascending=[False])
 
     if is_interval:
-        result = json.dumps(products_df_sorted.to_json(orient='records'))
+        result = json.dumps(list(products_df_sorted['summary']))
     else:
-        result = json.dumps(products_df_sorted.iloc[[0]].to_json(orient='records'))
+        result = json.dumps(list(products_df_sorted.iloc[[0]]['summary']))
     result = "HOLA"
     return result
 
