@@ -122,6 +122,7 @@ async def read_root(request: Request):
         date_a = interval[0]
         date_b = interval[1]
         str_interval = str(date_a) + '#' + str(date_b)
+        print(str_interval)
         print("IIIIIIIIII")
         query = f"UPDATE sessions SET interval = :new_interval_value WHERE id = :row_id"
         values = {"new_interval_value": str_interval, "row_id": chat_id}
