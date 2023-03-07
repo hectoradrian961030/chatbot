@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from databases import Database
 from geopy.geocoders import Nominatim
 from sentinelsat import SentinelAPI
-from shapely.geometry import Polygon
+from shapely.geometry import Point
 from datetime import datetime, date, timedelta
 
 
@@ -65,8 +65,7 @@ async def generate_response(chat_id):
     api = SentinelAPI(COPERNICUS_USER, COPERNICUS_PASSWORD,
                       COPERNICUS_HUB_URL)
 
-    bbox = Polygon([(latitude, longitude), (latitude, longitude),
-                    (latitude, longitude)])
+    point = Point((latitude, longitude))
 
     if img_type == 'optica':
         platformname = 'Sentinel-2'
@@ -90,7 +89,7 @@ async def generate_response(chat_id):
         start_date = start_date.strftime("%Y%m%d")
         end_date = end_date.strftime("%Y%m%d")
 
-    products = api.query(bbox.wkt,
+    products = api.query(point.wkt,
                          date=(start_date, end_date),
                          platformname=platformname, producttype=producttype)
 
