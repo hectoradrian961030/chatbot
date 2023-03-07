@@ -94,6 +94,12 @@ async def read_root(request: Request):
     elif intent in ["last_image"]:
         print("EEEEEEEE")
         chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=True)
+    elif intent in ["last_image_location"]:
+        print("TTTTTTTT")
+        query = f"UPDATE sessions SET location = :new_location_value WHERE id = :row_id"
+        values = {"new_location_value": location, "row_id": chat_id}
+
+        await database.execute(query=query, values=values)
     elif intent in ["interval_images_yes",
                     "interval_images_no"]:
         print("FFFFFFFF")
