@@ -96,14 +96,11 @@ async def generate_response(chat_id):
     products_df = api.to_dataframe(products)
     products_df_sorted = products_df.sort_values(['beginposition'], ascending=[False])
 
-    print(products_df_sorted)
-
     if is_interval:
-        pass
+        result = products_df_sorted.to_dict(orient='records')
     else:
-        latest_product = products_df_sorted.iloc[0]
+        result = products_df_sorted.iloc[[0]].to_dict(orient='records')
 
-    print("FINAL RESULTS ", result)
     return result
 
 @app.post("/", tags=["Root"])
@@ -151,6 +148,9 @@ async def read_root(request: Request):
         await database.execute(query=query, values=values)
 
         response = await generate_response(chat_id)
+        
+        return {'fulfillmentText': response}
+
     elif intent in ["interval_images"]:
         print("DDDDDDDD")
         chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=False, interval='None')
