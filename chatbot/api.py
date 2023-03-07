@@ -16,7 +16,7 @@ async def database_connect():
 async def database_disconnect():
     await database.disconnect()
 
-async def get_or_create_chat(chat_id, location = 'None', type = 'None', last = False):
+async def get_or_create_chat(chat_id, location = 'None', type = 'None', last = False, interval = 'None'):
     print(chat_id, location, type, last)
     # Define the SQL query to get the session
     query = f"SELECT * FROM sessions WHERE id = :session_id"
@@ -28,8 +28,8 @@ async def get_or_create_chat(chat_id, location = 'None', type = 'None', last = F
     result = await database.fetch_all(query=query, values=values)
 
     if not result:
-        query = "INSERT INTO sessions (id, location, type, last) VALUES (:id, :location, :type, :last)"
-        values = {"id": chat_id, "location": location, "type": type, "last": last}
+        query = "INSERT INTO sessions (id, location, type, last, interval) VALUES (:id, :location, :type, :last, :interval)"
+        values = {"id": chat_id, "location": location, "type": type, "last": last, "interval": interval}
         result = await database.execute(query=query, values=values)
 
     print("RESULT", chat_id)
@@ -93,10 +93,10 @@ async def read_root(request: Request):
         response = await generate_response(chat_id)
     elif intent in ["interval_images"]:
         print("DDDDDDDD")
-        chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=False)
+        chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=False, interval='None')
     elif intent in ["last_image"]:
         print("EEEEEEEE")
-        chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=True)
+        chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=True, interval='None')
     elif intent in ["last_image_location"]:
         print("TTTTTTTT")
         query = f"UPDATE sessions SET location = :new_location_value WHERE id = :row_id"
