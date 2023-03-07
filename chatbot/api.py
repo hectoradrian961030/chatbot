@@ -91,8 +91,6 @@ async def read_root(request: Request):
         await database.execute(query=query, values=values)
 
         response = await generate_response(chat_id)
-
-    # GET OR CREATE BY SESSION OR CHATID
     elif intent in ["interval_images"]:
         print("DDDDDDDD")
         chat_id = await get_or_create_chat(chat_id=chat_id, location=location, type='None', last=False)
@@ -103,7 +101,6 @@ async def read_root(request: Request):
         print("TTTTTTTT")
         query = f"UPDATE sessions SET location = :new_location_value WHERE id = :row_id"
         values = {"new_location_value": location, "row_id": chat_id}
-
         await database.execute(query=query, values=values)
     elif intent in ["interval_images_yes",
                     "interval_images_no"]:
@@ -120,6 +117,9 @@ async def read_root(request: Request):
         query = f"UPDATE sessions SET last = :new_last_value WHERE id = :row_id"
         values = {"new_last_value": last, "row_id": chat_id}
         await database.execute(query=query, values=values)
+    elif intent in ["interval_images_no_interval"]:
+        print("IIIIIIIIII")
+
     
 
     
