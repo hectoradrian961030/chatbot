@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from databases import Database
 from geopy.geocoders import Nominatim
 from sentinelsat import SentinelAPI
@@ -150,7 +151,7 @@ async def read_root(request: Request):
 
         response = await generate_response(chat_id)
         print(response)
-        return {'fulfillmentText': response}
+        return JSONResponse(content={'fulfillmentText': response})
 
     elif intent in ["interval_images"]:
         print("DDDDDDDD")
