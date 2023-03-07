@@ -119,9 +119,12 @@ async def read_root(request: Request):
         await database.execute(query=query, values=values)
     elif intent in ["interval_images_no_interval"]:
         interval = data['queryResult']['parameters']['date']
+        date_a = interval[0]
+        date_b = interval[1]
+        str_interval = str(date_a) + '#' + str(date_b)
         print("IIIIIIIIII")
         query = f"UPDATE sessions SET interval = :new_interval_value WHERE id = :row_id"
-        values = {"new_interval_value": interval, "row_id": chat_id}
+        values = {"new_interval_value": str_interval, "row_id": chat_id}
         await database.execute(query=query, values=values)
 
     
