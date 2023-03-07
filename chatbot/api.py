@@ -102,7 +102,6 @@ async def generate_response(chat_id):
         result = json.dumps(list(products_df_sorted['summary']))
     else:
         result = json.dumps(list(products_df_sorted.iloc[[0]]['summary']))
-    result = "HOLA"
     return result
 
 @app.post("/", tags=["Root"])
